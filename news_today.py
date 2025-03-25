@@ -27,3 +27,19 @@ def get_today_news():
             "status": "error",
             "message": "No news found in database."
         })
+
+from database import save_today_news
+
+@app.get("/save_sample_news")
+def save_sample():
+    news_text = """
+    📊 TODAY’S MARKET MOVERS
+
+    - 8:30am USD Core Retail Sales (Expected: 0.2%)
+    - 10:00am USD Fed Interest Rate Decision
+    - 11:30am GBP BoE Gov Bailey Speaks
+
+    Volatility expected on USD, GBP.
+    """
+    save_today_news("today_news_final.png", news_text)
+    return {"status": "success", "message": "Sample news saved to DB ✅"}
