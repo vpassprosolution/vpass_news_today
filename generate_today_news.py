@@ -16,12 +16,12 @@ def generate_today_news():
     # Step 3: Add Watermark
     add_watermark()
 
-    # Step 4: Parse today's news text
+    # Step 4: Parse today's news text (Investing.com version)
     news_text = get_today_news_text()
     print("📰 Parsed News Text:")
     print(news_text)
 
-    # Step 5: Save to PostgreSQL
+    # Step 5: Save image + text to PostgreSQL
     save_today_news("today_news_final.png", news_text)
 
     print("✅ NEWS GENERATED & SAVED SUCCESSFULLY ✅")
