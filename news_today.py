@@ -28,5 +28,11 @@ def get_today_news():
             "message": "No news found in database."
         })
 
-from database import save_today_news
+from generate_today_news import generate_today_news
+
+@app.get("/generate_today_news")
+def run_full_news_generator():
+    generate_today_news()
+    return {"status": "success", "message": "Today’s news image + text generated and saved ✅"}
+
 
