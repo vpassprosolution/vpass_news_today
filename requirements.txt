@@ -3,4 +3,5 @@ uvicorn
 httpx
 pillow
 psycopg2-binary
+beautifulsoup4
 playwright
