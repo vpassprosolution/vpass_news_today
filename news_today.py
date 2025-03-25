@@ -1,18 +1,29 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse
+from database import load_today_news
 import init_db
 
 app = FastAPI()
 
-# 🧠 Auto-create the table at startup
-init_db.create_table()
+# ✅ Create table on startup
+@app.on_event("startup")
+def startup_event():
+    init_db.create_table()
 
+# ✅ MAIN ENDPOINT
 @app.get("/get_today_news")
 def get_today_news():
-    # Temporary placeholder for testing
-    return JSONResponse(content={
-        "status": "success",
-        "message": "VESSA PRO News API is working ✅",
-        "image_url": None,
-        "news_text": None
-    })
+    image_data, news_text = load_today_news()
+
+    if image_data and news_text:
+        return {
+            "status": "success",
+            "message": "News data loaded ✅",
+            "image_base64": image_data.hex(),  # Will convert to image in bot
+            "news_text": news_text
+        }
+    else:
+        return JSONResponse(content={
+            "status": "error",
+            "message": "No news found in database."
+        })
