@@ -21,30 +21,29 @@ def get_today_news_text():
 
     soup = BeautifulSoup(response.text, "html.parser")
 
-    # Current day
-    today_str = datetime.utcnow().strftime("%Y-%m-%d")
-
-    # Find all rows in calendar
     rows = soup.select("tr.js-event-item")
 
     news_items = []
 
     for row in rows:
-        date_attr = row.get("data-event-datetime", "")
-        if not today_str in date_attr:
+        # Check for 3 bull icons (high-impact)
+        bulls = row.select(".grayFullBullishIcon")
+        if len(bulls) < 3:
             continue
 
-        # Extract impact (3 bulls = high impact)
-        impact = row.select_one(".importance span.grayFullBullishIcon")
-        if not impact or len(row.select(".grayFullBullishIcon")) < 3:
-            continue  # not high-impact (must be 3 bulls)
+        # Extract time, currency, event
+        time = row.select_one(".time")
+        currency = row.select_one(".flagCur")
+        event = row.select_one(".event")
 
-        # Extract time, currency, event title
-        time = row.select_one(".time").get_text(strip=True)
-        currency = row.select_one(".flagCur").get_text(strip=True)
-        title = row.select_one(".event").get_text(strip=True)
+        if not (time and currency and event):
+            continue
 
-        news_items.append(f"⏰ {time} | {currency} | 🔴 {title}")
+        time_text = time.get_text(strip=True)
+        currency_text = currency.get_text(strip=True)
+        event_text = event.get_text(strip=True)
+
+        news_items.append(f"⏰ {time_text} | {currency_text} | 🔴 {event_text}")
 
     if not news_items:
         return "Today doesn't have any high-impact news."
