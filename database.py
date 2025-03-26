@@ -1,7 +1,9 @@
 import psycopg2
 import os
+from dotenv import load_dotenv
 
-# 🧠 Reuse Railway environment variables
+load_dotenv()  # ✅ Clearly load your .env variables locally
+
 DB_NAME = os.getenv("POSTGRES_DB")
 DB_USER = os.getenv("POSTGRES_USER")
 DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
@@ -21,14 +23,11 @@ def save_today_news(image_path: str, news_text: str):
     conn = get_connection()
     cursor = conn.cursor()
 
-    # Delete old data
     cursor.execute("DELETE FROM daily_news")
 
-    # Read image as binary
     with open(image_path, "rb") as f:
         binary_image = f.read()
 
-    # Insert new
     cursor.execute(
         "INSERT INTO daily_news (image, news_text) VALUES (%s, %s)",
         (binary_image, news_text)
@@ -48,5 +47,5 @@ def load_today_news():
     conn.close()
 
     if row:
-        return row[0], row[1]  # image (bytes), text
+        return row[0], row[1]
     return None, None
