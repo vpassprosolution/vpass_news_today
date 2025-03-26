@@ -1,9 +1,16 @@
 import httpx
+from datetime import datetime, timedelta
 
 API_KEY = "k5vJut085d8MiAZM"
 
+def get_today_and_tomorrow_url():
+    today = datetime.utcnow().strftime('%b%d.%Y').lower()
+    tomorrow = (datetime.utcnow() + timedelta(days=1)).strftime('%b%d.%Y').lower()
+    return f"https://www.forexfactory.com/calendar?range={today}-{tomorrow}"
+
 def take_screenshot():
-    url_to_capture = "https://www.forexfactory.com/calendar"
+    # ✅ Clearly screenshots today and tomorrow ONLY.
+    url_to_capture = get_today_and_tomorrow_url()
     screenshot_api_url = f"https://api.urlbox.io/v1/{API_KEY}/png"
 
     params = {
